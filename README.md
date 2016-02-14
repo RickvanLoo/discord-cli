@@ -1,7 +1,10 @@
 # discord-cli
 Minimalistic Command-Line Interface for Discord
 
+![I suck at English, while 256 colors is enough for everyone](screenshot.png)
+
 <sub>Disclaimer: Currently only tested on Linux.</sub>
+<sub><sub> It also looks pretty bad in its current state.<sub><sub>
 ### How to Install?
 Currently the easiest working way to install is to use the Go tools. I'm looking at using GCCGO and makefiles to reduce installation steps, and make setting PATHS unnecessary.
 * Install the Go Tools and setup the `$GOPATH` (There are loads of tutorial for this part)
