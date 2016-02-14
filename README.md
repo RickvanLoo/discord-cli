@@ -13,7 +13,7 @@ Currently the easiest working way to install is to use the Go tools. I'm looking
 Configuration files are being stored in JSON format and are automatically created when you first run discord-cli. Do not change the 'key' value inside `{"key":"value"}`, this is the part that discord-cli uses for parsing, missing keys will definitely return errors.
 
 | Setting       | Function         |
-| ------------- |:-------------:|
+| ------------- |-------------|
 | username      | Discord Username (emailaddress) |
 | password      | Discord Password |
 | guild         | Default Discord Server (Currently `null` because this function does not work yet) |
