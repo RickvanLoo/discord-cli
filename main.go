@@ -44,6 +44,7 @@ func main() {
 	Welcome(dg)
 
 	//SetChannelState
+	SetGuildState(dg)
 	SetChannelState(dg)
 
 	//Setup stdout logging
@@ -64,7 +65,22 @@ func main() {
 			break
 		}
 
-		dg.ChannelMessageSend(State.Channel.ID, line)
+		//CHANGE SERVER
+		if line == ":d" {
+			SetGuildState(dg)
+			SetChannelState(dg)
+			line = ""
+		}
+
+		//CHANGE CHANNEL
+		if line == ":c" {
+			SetChannelState(dg)
+			line = ""
+		}
+
+		if line != "" {
+			dg.ChannelMessageSend(State.Channel.ID, line)
+		}
 	}
 
 	return

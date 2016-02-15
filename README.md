@@ -28,3 +28,5 @@ When inside a text channel, the following commands are available:
 | Command       | Function         |
 | ------------- |:-------------:|
 | :q      | Quits discord-cli |
+| :d      | 'Disconnect' Guild and go back to selection menu|
+| :c      | Change listening Channel inside Guild

@@ -34,6 +34,33 @@ func Welcome(dg *discordgo.Session) {
 func SetChannelState(dg *discordgo.Session) {
 	State.InsertMode = false
 
+	guild := State.Guild
+	d := color.New(color.FgYellow, color.Bold)
+	d.Printf("Select a Channel:\n")
+	for key, channel := range guild.Channels {
+		if channel.Type == "text" {
+			fmt.Printf("%d:%s\n", key, channel.Name)
+		}
+	}
+
+	var response int
+	fmt.Scanf("%d\n", &response)
+	for guild.Channels[response].Type != "text" {
+		Error := color.New(color.FgRed, color.Bold)
+		Error.Printf("That's a voice channel, you know this is a CLI right?\n")
+		d.Printf("Select a Channel:\n")
+		fmt.Scanf("%d\n", &response)
+	}
+
+	State.Channel = guild.Channels[response]
+
+	Clear()
+
+	State.InsertMode = true
+}
+
+func SetGuildState(dg *discordgo.Session) {
+	State.InsertMode = false
 	Guilds, _ := dg.UserGuilds()
 	d := color.New(color.FgYellow, color.Bold)
 	d.Printf("Select a Guild:\n")
@@ -45,26 +72,7 @@ func SetChannelState(dg *discordgo.Session) {
 	var response int
 	fmt.Scanf("%d\n", &response)
 
-	guild, _ := dg.Guild(Guilds[response].ID)
-
-	d.Printf("Select a Channel:\n")
-	for key, channel := range guild.Channels {
-		if channel.Type == "text" {
-			fmt.Printf("%d:%s\n", key, channel.Name)
-		}
-	}
-
-	fmt.Scanf("%d\n", &response)
-	for guild.Channels[response].Type != "text" {
-		Error := color.New(color.FgRed, color.Bold)
-		Error.Printf("That's a voice channel, you know this is a CLI right?\n")
-		d.Printf("Select a Channel:\n")
-		fmt.Scanf("%d\n", &response)
-	}
-
-	State.Channel = guild.Channels[response]
-	State.Guild = guild
-
+	State.Guild, _ = dg.Guild(Guilds[response].ID)
 	Clear()
 
 	State.InsertMode = true
