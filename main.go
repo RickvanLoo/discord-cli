@@ -65,18 +65,7 @@ func main() {
 			break
 		}
 
-		//CHANGE SERVER
-		if line == ":d" {
-			SetGuildState(dg)
-			SetChannelState(dg)
-			line = ""
-		}
-
-		//CHANGE CHANNEL
-		if line == ":c" {
-			SetChannelState(dg)
-			line = ""
-		}
+		line = ParseForCommands(line, dg)
 
 		if line != "" {
 			dg.ChannelMessageSend(State.Channel.ID, line)
