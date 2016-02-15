@@ -6,8 +6,8 @@ import (
 	"fmt"
 	"log"
 
+	"github.com/Rivalo/readline"
 	"github.com/bwmarrin/discordgo"
-	"github.com/chzyer/readline"
 )
 
 // Session contains the current settings of the client
@@ -48,7 +48,10 @@ func main() {
 	SetChannelState(dg)
 
 	//Setup stdout logging
-	rl, err := readline.New("> ")
+	rl, err := readline.NewEx(&readline.Config{
+		Prompt:         "> ",
+		UniqueEditLine: true,
+	})
 	if err != nil {
 		panic(err)
 	}
