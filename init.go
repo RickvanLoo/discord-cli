@@ -12,17 +12,20 @@ import (
 //THIS FILE IS A COMPLETE MESS, IT BARELY WORKS
 //PLEASE FIX
 
+//Header prints a Cyan header to the TERM containing the program title and its version
 func Header(version string) {
 	d := color.New(color.FgCyan, color.Bold)
 	d.Printf("discord-cli - version: %s\n\n", version)
 }
 
+//Clear clears the terminal => This barely works, please fix
 func Clear() {
 	c := exec.Command("clear")
 	c.Stdout = os.Stdout
 	c.Run()
 }
 
+//Welcome sends an acknowledge to the terminal that it is listening, and prints the current Username
 func Welcome(dg *discordgo.Session) {
 	d := color.New(color.FgYellow, color.Bold)
 	d.Printf("Listening!\n\n")
@@ -31,6 +34,7 @@ func Welcome(dg *discordgo.Session) {
 	d.Printf("Welcome, %s!\n\n", user.Username)
 }
 
+//SetChannelState sets the Channel inside the State
 func SetChannelState(dg *discordgo.Session) {
 	State.InsertMode = false
 
@@ -59,6 +63,7 @@ func SetChannelState(dg *discordgo.Session) {
 	State.InsertMode = true
 }
 
+//SetGuildState sets the Guild inside the State
 func SetGuildState(dg *discordgo.Session) {
 	State.InsertMode = false
 	Guilds, _ := dg.UserGuilds()

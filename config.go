@@ -7,8 +7,10 @@ import (
 	"os/user"
 )
 
+// State is the current state of the client
 var State Session
 
+//GetConfig retrieves configuration file from ~./config/discord-cli, if it doesn't exist it calls CreateConfig()
 func GetConfig() {
 	//Get User
 	usr, err := user.Current()
@@ -33,6 +35,7 @@ func GetConfig() {
 	}
 }
 
+//CreateConfig creates folder inside $HOME and makes a new empty configuration file
 func CreateConfig() {
 	//Get User
 	usr, err := user.Current()
@@ -69,6 +72,7 @@ func CreateConfig() {
 	file.Close()
 }
 
+//CheckState checks the current state for essential missing information, errors will fail the program
 func CheckState() {
 	//Get User
 	usr, err := user.Current()
