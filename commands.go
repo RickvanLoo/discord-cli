@@ -7,7 +7,6 @@ func ParseForCommands(line string, dg *discordgo.Session) string {
 	switch line {
 	case ":d":
 		SetGuildState(dg)
-		SetChannelState(dg)
 		line = ""
 	case ":c":
 		SetChannelState(dg)

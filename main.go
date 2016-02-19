@@ -5,9 +5,12 @@ package main
 import (
 	"fmt"
 	"log"
+	"os"
+	"os/exec"
 
 	"github.com/Rivalo/readline"
 	"github.com/bwmarrin/discordgo"
+	"github.com/fatih/color"
 )
 
 // Session contains the current settings of the client
@@ -25,7 +28,7 @@ func main() {
 	CheckState()
 	State.InsertMode = false
 	Clear()
-	Header("V0.1")
+	Header("V0.2.0")
 
 	// Connect to Discord
 	dg, err := discordgo.New(State.Username, State.Password)
@@ -45,7 +48,6 @@ func main() {
 
 	//SetChannelState
 	SetGuildState(dg)
-	SetChannelState(dg)
 
 	//Setup stdout logging
 	rl, err := readline.NewEx(&readline.Config{
@@ -76,4 +78,26 @@ func main() {
 	}
 
 	return
+}
+
+//Header prints a Cyan header to the TERM containing the program title and its version
+func Header(version string) {
+	d := color.New(color.FgCyan, color.Bold)
+	d.Printf("discord-cli - version: %s\n\n", version)
+}
+
+//Clear clears the terminal => This barely works, please fix
+func Clear() {
+	c := exec.Command("clear")
+	c.Stdout = os.Stdout
+	c.Run()
+}
+
+//Welcome sends an acknowledge to the terminal that it is listening, and prints the current Username
+func Welcome(dg *discordgo.Session) {
+	d := color.New(color.FgYellow, color.Bold)
+	d.Printf("Listening!\n\n")
+
+	user, _ := dg.User("@me")
+	d.Printf("Welcome, %s!\n\n", user.Username)
 }
