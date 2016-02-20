@@ -3,6 +3,8 @@ Minimalistic Command-Line Interface for Discord
 
 [![Build Status](https://travis-ci.org/Rivalo/discord-cli.svg?branch=master)](https://travis-ci.org/Rivalo/discord-cli)
 
+Join our Discord Chat! https://discord.gg/0pXWCo5RQbVuFHDM
+
 ![I suck at English, while 256 colors is enough for everyone](screenshot.png)
 
 <sub>Disclaimer: Currently only tested on Linux.</sub>
