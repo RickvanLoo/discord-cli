@@ -8,8 +8,8 @@ import (
 	"os"
 	"os/exec"
 
-	"github.com/Rivalo/readline"
-	"github.com/bwmarrin/discordgo"
+	"github.com/Rivalo/discordgo_cli"
+	"github.com/chzyer/readline"
 	"github.com/fatih/color"
 )
 

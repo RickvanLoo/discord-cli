@@ -1,6 +1,6 @@
 package main
 
-import "github.com/bwmarrin/discordgo"
+import "github.com/Rivalo/discordgo_cli"
 
 //ParseForCommands parses input for Commands, returns message if no command specified, else return is empty
 func ParseForCommands(line string, dg *discordgo.Session) string {

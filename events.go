@@ -3,7 +3,7 @@ package main
 import (
 	"log"
 
-	"github.com/bwmarrin/discordgo"
+	"github.com/Rivalo/discordgo_cli"
 	"github.com/fatih/color"
 )
 

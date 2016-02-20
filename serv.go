@@ -6,7 +6,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/bwmarrin/discordgo"
+	"github.com/Rivalo/discordgo_cli"
 	"github.com/fatih/color"
 )
 
