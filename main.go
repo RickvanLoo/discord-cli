@@ -38,7 +38,7 @@ func main() {
 	}
 
 	// Register messageCreate as a callback for the OnMessageCreate event.
-	dg.OnMessageCreate = messageCreate
+	dg.AddHandler(messageCreate)
 
 	// Open the websocket and begin listening.
 	dg.Open()

@@ -9,7 +9,7 @@ import (
 
 // This function will be called (due to above assignment) every time a new
 // message is created on any channel that the autenticated user has access to.
-func messageCreate(s *discordgo.Session, m *discordgo.Message) {
+func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 	UserName := color.New(color.FgGreen).SprintFunc()
 
 	if State.InsertMode {
