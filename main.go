@@ -13,6 +13,20 @@ import (
 	"github.com/fatih/color"
 )
 
+//Global Message Types
+const (
+	ErrorMsg  = "Error"
+	InfoMsg   = "Info"
+	HeaderMsg = "Head"
+	TextMsg   = "Text"
+)
+
+//Version is current version const
+const Version = "v0.2.0"
+
+//MsgType is a string containing global message type
+type MsgType string
+
 // Session contains the current settings of the client
 type Session struct {
 	Username   string             `json:"username"`
@@ -28,7 +42,7 @@ func main() {
 	CheckState()
 	State.InsertMode = false
 	Clear()
-	Header("V0.2.0")
+	Msg(HeaderMsg, "discord-cli - version: %s\n\n", Version)
 
 	// Connect to Discord
 	dg, err := discordgo.New(State.Username, State.Password)
@@ -44,7 +58,8 @@ func main() {
 	dg.Open()
 
 	//Print Welcome as a sign that the user has logged in.
-	Welcome(dg)
+	user, _ := dg.User("@me")
+	Msg(InfoMsg, "Welcome, %s!\n\n", user.Username)
 
 	//SetChannelState
 	SetGuildState(dg)
@@ -80,24 +95,41 @@ func main() {
 	return
 }
 
-//Header prints a Cyan header to the TERM containing the program title and its version
-func Header(version string) {
-	d := color.New(color.FgCyan, color.Bold)
-	d.Printf("discord-cli - version: %s\n\n", version)
+//Msg is a composition of Color.New printf functions
+func Msg(MsgType, format string, a ...interface{}) {
+
+	// TODO: Add support for changing color by configuration
+
+	Error := color.New(color.FgRed, color.Bold)
+	Info := color.New(color.FgYellow, color.Bold)
+	Head := color.New(color.FgCyan, color.Bold)
+	Text := color.New(color.FgWhite)
+
+	//Testing Colors
+	//Info := color.New(color.FgMagenta, color.CrossedOut)
+	//Head := color.New(color.FgMagenta, color.CrossedOut)
+	//Text := color.New(color.FgMagenta, color.CrossedOut)
+
+	switch MsgType {
+	case "Error":
+		Error.Printf(format, a...)
+	case "Info":
+		Info.Printf(format, a...)
+	case "Head":
+		Head.Printf(format, a...)
+	case "Text":
+		Text.Printf(format, a...)
+	default:
+		Text.Printf(format, a...)
+	}
 }
 
 //Clear clears the terminal => This barely works, please fix
 func Clear() {
+
+	// TODO: ADD support for multiple operating systems and terminals. Linux = clear, Windows = cls, have to do research for OSX and BSD.
+
 	c := exec.Command("clear")
 	c.Stdout = os.Stdout
 	c.Run()
-}
-
-//Welcome sends an acknowledge to the terminal that it is listening, and prints the current Username
-func Welcome(dg *discordgo.Session) {
-	d := color.New(color.FgYellow, color.Bold)
-	d.Printf("Listening!\n\n")
-
-	user, _ := dg.User("@me")
-	d.Printf("Welcome, %s!\n\n", user.Username)
 }

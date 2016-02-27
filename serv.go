@@ -7,7 +7,6 @@ import (
 	"strings"
 
 	"github.com/Rivalo/discordgo_cli"
-	"github.com/fatih/color"
 )
 
 //THIS FILE IS A COMPLETE MESS, IT BARELY WORKS
@@ -18,14 +17,13 @@ func SetChannelState(dg *discordgo.Session) {
 	State.InsertMode = false
 
 	guild := State.Guild
-	d := color.New(color.FgYellow, color.Bold)
-	d.Printf("Select a Channel:\n")
+	Msg(InfoMsg, "Select a Channel:\n")
 	for key, channel := range guild.Channels {
 		if channel.Type == "text" {
-			fmt.Printf("%d:%s\n", key, channel.Name)
+			Msg(TextMsg, "%d:%s\n", key, channel.Name)
 		}
 	}
-	d.Println("b:Go Back")
+	Msg(InfoMsg, "b:Go Back\n")
 
 	var response string
 	fmt.Scanf("%s\n", &response)
@@ -37,9 +35,8 @@ func SetChannelState(dg *discordgo.Session) {
 	}
 
 	for guild.Channels[GuildID].Type != "text" {
-		Error := color.New(color.FgRed, color.Bold)
-		Error.Printf("That's a voice channel, you know this is a CLI right?\n")
-		d.Printf("Select a Channel:\n")
+		Msg(ErrorMsg, "That's a voice channel, you know this is a CLI right?\n")
+		Msg(InfoMsg, "Select a Channel:\n")
 		fmt.Scanf("%s\n", &response)
 	}
 
@@ -55,11 +52,11 @@ func SetChannelState(dg *discordgo.Session) {
 func SetGuildState(dg *discordgo.Session) {
 	State.InsertMode = false
 	Guilds, _ := dg.UserGuilds()
-	d := color.New(color.FgYellow, color.Bold)
-	d.Printf("Select a Guild:\n")
+	Msg(InfoMsg, "Select a Guild:\n")
 
 	for key, guild := range Guilds {
-		fmt.Printf("%d:%s\n", key, guild.Name)
+		Msg(TextMsg, "%d:%s\n", key, guild.Name)
+
 	}
 	printExtraOptions()
 
@@ -86,18 +83,18 @@ func SetGuildState(dg *discordgo.Session) {
 }
 
 func printExtraOptions() {
-	fmt.Println("")
-	fmt.Println("n:Join Server")
-	fmt.Println("d:Leave Server.")
-	fmt.Println("o:Join discord-cli Server")
-	fmt.Println("q:Quit discord-cli")
+	Msg(TextMsg, "\nn:Join Server\n")
+	Msg(TextMsg, "d:Leave Server.\n")
+	Msg(TextMsg, "o:Join discord-cli Server\n")
+	Msg(TextMsg, "q:Quit discord-cli\n")
 }
 
 //ServJoinDiscordCli joins the official discord-cli server
 func ServJoinDiscordCli(dg *discordgo.Session) {
 	Clear()
-	d := color.New(color.FgYellow, color.Bold)
-	d.Println("Join official discord-cli server? [Y/n]")
+
+	Msg(InfoMsg, "Join official discord-cli server? [Y/n]\n")
+
 	var response string
 	fmt.Scanf("%s\n", &response)
 
@@ -114,8 +111,8 @@ func ServJoinDiscordCli(dg *discordgo.Session) {
 //ServJoin joins a Server based on invite
 func ServJoin(dg *discordgo.Session) {
 	Clear()
-	d := color.New(color.FgYellow, color.Bold)
-	d.Println("Enter invite code to enter server: (empty to go back)")
+	Msg(InfoMsg, "Enter invite code to enter server: (empty to go back)\n")
+
 	var response string
 	fmt.Scanf("%s\n", &response)
 
@@ -131,7 +128,8 @@ func ServJoin(dg *discordgo.Session) {
 		return
 	}
 
-	d.Println("Join " + Invite.Guild.Name + " [Y/n]?")
+	Msg(InfoMsg, "Join %s [Y/n]?", Invite.Guild.Name)
+
 	var confirm string
 	fmt.Scanf("%s\n", &confirm)
 	if strings.ToUpper(confirm) == "" || strings.ToUpper(confirm) == "Y" {
@@ -146,13 +144,12 @@ func ServJoin(dg *discordgo.Session) {
 func ServLeave(dg *discordgo.Session) {
 	Clear()
 	Guilds, _ := dg.UserGuilds()
-	d := color.New(color.FgYellow, color.Bold)
-	d.Println("Leave a server?")
+	Msg(InfoMsg, "Leave a server?\n")
 
 	for key, guild := range Guilds {
-		fmt.Printf("%d:%s\n", key, guild.Name)
+		Msg(TextMsg, "%d:%s\n", key, guild.Name)
 	}
-	d.Println("b:Go Back")
+	Msg(InfoMsg, "b:Go Back\n")
 
 	var response string
 	fmt.Scanf("%s\n", &response)
@@ -163,7 +160,8 @@ func ServLeave(dg *discordgo.Session) {
 	}
 	GuildID, _ := strconv.Atoi(response)
 
-	d.Println("Leave " + Guilds[GuildID].Name + " [Y/n]?")
+	Msg(InfoMsg, "Leave %s [Y/n]?", Guilds[GuildID].Name)
+
 	var confirm string
 	fmt.Scanf("%s\n", &confirm)
 	if strings.ToUpper(confirm) == "" || strings.ToUpper(confirm) == "Y" {
