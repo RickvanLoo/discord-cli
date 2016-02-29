@@ -1,7 +1,11 @@
 //Package DiscordState is an abstraction layer that gives proper structs and functions to get and set the current state of the cli server
 package DiscordState
 
-import "github.com/Rivalo/discordgo_cli"
+import (
+	"fmt"
+
+	"github.com/Rivalo/discordgo_cli"
+)
 
 //!----- Session -----!//
 
@@ -26,9 +30,24 @@ func (Session *Session) Start() error {
 	// Open the websocket and begin listening.
 	dg.Open()
 
-	for _, Guild := range dg.State.Guilds {
+	fmt.Printf("*Retrieving Guilds...")
+
+	Session.Guilds = make(map[string]*discordgo.Guild)
+
+	UserGuilds, err := dg.UserGuilds()
+	if err != nil {
+		return err
+	}
+
+	for _, UserGuild := range UserGuilds {
+		Guild, err := dg.Guild(UserGuild.ID)
+		if err != nil {
+			return err
+		}
 		Session.Guilds[Guild.ID] = Guild
 	}
+
+	fmt.Printf(" %d FOUND!\n", len(Session.Guilds))
 
 	Session.DiscordGo = dg
 
@@ -49,14 +68,26 @@ func (Session *Session) NewState(GuildID string) *State {
 	State.Guild = Session.Guilds[GuildID]
 
 	//Retrieve Channels
+	fmt.Printf("*Retrieving Channels...")
+
+	State.Channels = make(map[string]*discordgo.Channel)
+
 	for _, Channel := range State.Guild.Channels {
 		State.Channels[Channel.ID] = Channel
 	}
 
+	fmt.Printf(" %d FOUND!\n", len(State.Channels))
+
 	//Retrieve Members
+	fmt.Printf("*Retrieving Members...")
+
+	State.Members = make(map[string]*discordgo.Member)
+
 	for _, Member := range State.Guild.Members {
 		State.Members[Member.User.ID] = Member
 	}
+
+	fmt.Printf(" %d FOUND!\n", len(State.Members))
 
 	return State
 }
