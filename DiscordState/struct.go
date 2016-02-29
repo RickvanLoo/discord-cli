@@ -10,6 +10,7 @@ type State struct {
 	Members  map[string]*discordgo.Member
 	Messages map[string]*discordgo.Message
 	Session  *Session
+	Enabled  bool //Toggles State for Event handling
 }
 
 //Session contains the 'state' of the attached server

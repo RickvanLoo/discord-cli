@@ -39,6 +39,9 @@ func (Session *Session) Start() error {
 func (Session *Session) NewState(GuildID string) *State {
 	State := new(State)
 
+	//Disable Event Handling
+	State.Enabled = false
+
 	//Set Session
 	State.Session = Session
 
