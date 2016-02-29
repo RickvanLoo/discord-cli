@@ -1,23 +1,16 @@
 package main
 
 import (
-	"log"
+	"fmt"
+	"time"
 
 	"github.com/Rivalo/discordgo_cli"
-	"github.com/fatih/color"
 )
 
-// This function will be called (due to above assignment) every time a new
+// This function will be called (due to AddHandler above) every time a new
 // message is created on any channel that the autenticated user has access to.
-func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
+func newMessage(s *discordgo.Session, m *discordgo.MessageCreate) {
 
-	UserName := color.New(color.FgGreen).SprintFunc()
-	Text := color.New(color.FgWhite).SprintFunc()
-
-	if State.InsertMode {
-		if m.ChannelID == State.Channel.ID {
-			log.Printf("> %s > %s\n", UserName(m.Author.Username), Text(m.ContentWithMentionsReplaced()))
-		}
-	}
-
+	// Print message to stdout.
+	fmt.Printf("%20s %20s %20s > %s\n", m.ChannelID, time.Now().Format(time.Stamp), m.Author.Username, m.Content)
 }

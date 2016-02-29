@@ -1,34 +1,36 @@
 package DiscordState
 
+import "github.com/Rivalo/discordgo_cli"
+
 //SetChannel sets the channel of the current State
 func (State *State) SetChannel(ID string) {
 	State.Channel = State.Channels[ID]
 }
 
-//UpdateChannels updates the channels inside the current State
+//UpdateChannels does a full update for the channels inside the State
 func (State *State) UpdateChannels() {
+	NewChannelList := make(map[string]*discordgo.Channel)
 
+	for _, Channel := range State.Guild.Channels {
+		NewChannelList[Channel.ID] = Channel
+	}
+
+	State.Channels = NewChannelList
 }
 
 //AddMember adds Member to State
-func (State *State) AddMember(ID string) error {
-	Member, err := State.Session.DiscordGo.GuildMember(State.Guild.ID, ID)
-	if err != nil {
-		return err
-	}
-
-	State.Members[ID] = Member
-	return nil
+func (State *State) AddMember(Member *discordgo.Member) {
+	State.Members[Member.User.ID] = Member
 }
 
 //DelMember deletes Member from State
-func (State *State) DelMember(ID string) {
-	delete(State.Members, ID)
+func (State *State) DelMember(Member *discordgo.Member) {
+	delete(State.Members, Member.User.ID)
 }
 
 //RetrieveMessages retrieves last N messages inside channel
-func (State *State) RetrieveMessages(amount int) error {
-	Messages, err := State.Session.DiscordGo.ChannelMessages(State.Channel.ID, amount, "", "")
+func (State *State) RetrieveMessages(Amount int) error {
+	Messages, err := State.Session.DiscordGo.ChannelMessages(State.Channel.ID, Amount, "", "")
 	if err != nil {
 		return err
 	}
@@ -41,16 +43,16 @@ func (State *State) RetrieveMessages(amount int) error {
 }
 
 //AddMessage adds a message to the State
-func (State *State) AddMessage(ID string) {
-
+func (State *State) AddMessage(Message *discordgo.Message) {
+	State.Messages[Message.ID] = Message
 }
 
 //EditMessage edits a message inside the State
-func (State *State) EditMessage(ID string) {
-
+func (State *State) EditMessage(Message *discordgo.Message) {
+	State.Messages[Message.ID] = Message
 }
 
 //DelMessage deletes a message inside the State
-func (State *State) DelMessage(ID string) {
-
+func (State *State) DelMessage(Message *discordgo.Message) {
+	delete(State.Messages, Message.ID)
 }

@@ -35,7 +35,7 @@ func (Session *Session) Start() error {
 	return nil
 }
 
-//NewState attaches a new state to the Guild inside a Session, and fills it
+//NewState attaches a new state to the Guild inside a Session, and fills it.
 func (Session *Session) NewState(GuildID string) *State {
 	State := new(State)
 
@@ -61,7 +61,7 @@ func (Session *Session) NewState(GuildID string) *State {
 	return State
 }
 
-//Update updates the current Guilds inside the session
+//Update does a full update for the Guilds inside the State
 func (Session *Session) Update() {
 	NewGuildList := make(map[string]*discordgo.Guild)
 

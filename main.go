@@ -3,12 +3,11 @@
 package main
 
 import (
-	"fmt"
 	"log"
 	"os"
 	"os/exec"
 
-	"github.com/Rivalo/discordgo_cli"
+	"github.com/Rivalo/discord-cli/DiscordState"
 	"github.com/chzyer/readline"
 	"github.com/fatih/color"
 )
@@ -22,47 +21,33 @@ const (
 )
 
 //Version is current version const
-const Version = "v0.2.0"
+const Version = "v0.3.0-DEVELOP"
 
 //MsgType is a string containing global message type
 type MsgType string
 
-// Session contains the current settings of the client
-type Session struct {
-	Username   string             `json:"username"`
-	Password   string             `json:"password"`
-	Guild      *discordgo.Guild   `json:"guild"`
-	Channel    *discordgo.Channel `json:"channel"`
-	InsertMode bool               `json:"-"`
-}
-
 func main() {
-	//Initialize Config
-	GetConfig()
-	CheckState()
-	State.InsertMode = false
+
 	Clear()
 	Msg(HeaderMsg, "discord-cli - version: %s\n\n", Version)
 
-	// Connect to Discord
-	dg, err := discordgo.New(State.Username, State.Password)
+	//NewSession
+	Session := DiscordState.NewSession("thismail@doesnotexist.com", "Pass") //Please don't abuse
+	err := Session.Start()
 	if err != nil {
-		fmt.Println(err)
-		return
+		log.Println("Session Failed")
+		log.Fatalln(err)
 	}
 
-	// Register messageCreate as a callback for the OnMessageCreate event.
-	dg.AddHandler(messageCreate)
+	//NewState
+	State := Session.NewState("148824204219777024")
+	State.SetChannel("148824204219777024")
 
-	// Open the websocket and begin listening.
-	dg.Open()
+	State.Session.DiscordGo.AddHandler(newMessage)
 
 	//Print Welcome as a sign that the user has logged in.
-	user, _ := dg.User("@me")
+	user, _ := State.Session.DiscordGo.User("@me")
 	Msg(InfoMsg, "Welcome, %s!\n\n", user.Username)
-
-	//SetChannelState
-	SetGuildState(dg)
 
 	//Setup stdout logging
 	rl, err := readline.NewEx(&readline.Config{
@@ -85,10 +70,8 @@ func main() {
 			break
 		}
 
-		line = ParseForCommands(line, dg)
-
 		if line != "" {
-			dg.ChannelMessageSend(State.Channel.ID, line)
+			State.Session.DiscordGo.ChannelMessageSend(State.Channel.ID, line)
 		}
 	}
 
