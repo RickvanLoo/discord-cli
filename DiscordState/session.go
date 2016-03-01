@@ -1,11 +1,7 @@
 //Package DiscordState is an abstraction layer that gives proper structs and functions to get and set the current state of the cli server
 package DiscordState
 
-import (
-	"fmt"
-
-	"github.com/Rivalo/discordgo_cli"
-)
+import "github.com/Rivalo/discordgo_cli"
 
 //!----- Session -----!//
 
@@ -20,7 +16,6 @@ func NewSession(Username, Password string) *Session {
 
 //Start attaches a discordgo listener to the Sessions and fills it.
 func (Session *Session) Start() error {
-	// TODO: Fill State
 
 	dg, err := discordgo.New(Session.Username, Session.Password)
 	if err != nil {
@@ -30,15 +25,15 @@ func (Session *Session) Start() error {
 	// Open the websocket and begin listening.
 	dg.Open()
 
-	fmt.Printf("*Retrieving Guilds...")
-
 	Session.Guilds = make(map[string]*discordgo.Guild)
 
+	//Retrieve GuildID's from current User
 	UserGuilds, err := dg.UserGuilds()
 	if err != nil {
 		return err
 	}
 
+	//Retrieve Guilds from GuildIDs
 	for _, UserGuild := range UserGuilds {
 		Guild, err := dg.Guild(UserGuild.ID)
 		if err != nil {
@@ -46,8 +41,6 @@ func (Session *Session) Start() error {
 		}
 		Session.Guilds[Guild.ID] = Guild
 	}
-
-	fmt.Printf(" %d FOUND!\n", len(Session.Guilds))
 
 	Session.DiscordGo = dg
 
@@ -68,7 +61,6 @@ func (Session *Session) NewState(GuildID string) *State {
 	State.Guild = Session.Guilds[GuildID]
 
 	//Retrieve Channels
-	fmt.Printf("*Retrieving Channels...")
 
 	State.Channels = make(map[string]*discordgo.Channel)
 
@@ -76,18 +68,13 @@ func (Session *Session) NewState(GuildID string) *State {
 		State.Channels[Channel.ID] = Channel
 	}
 
-	fmt.Printf(" %d FOUND!\n", len(State.Channels))
-
 	//Retrieve Members
-	fmt.Printf("*Retrieving Members...")
 
 	State.Members = make(map[string]*discordgo.Member)
 
 	for _, Member := range State.Guild.Members {
 		State.Members[Member.User.ID] = Member
 	}
-
-	fmt.Printf(" %d FOUND!\n", len(State.Members))
 
 	return State
 }

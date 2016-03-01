@@ -35,9 +35,13 @@ func (State *State) RetrieveMessages(Amount int) error {
 		return err
 	}
 
+	NewMessageList := make(map[string]*discordgo.Message)
+
 	for _, Message := range Messages {
-		State.Messages[Message.ID] = Message
+		NewMessageList[Message.ID] = Message
 	}
+
+	State.Messages = NewMessageList
 
 	return nil
 }
