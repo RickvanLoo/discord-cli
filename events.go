@@ -19,7 +19,7 @@ func newMessage(s *discordgo.Session, m *discordgo.MessageCreate) {
 	// Print message to stdout.
 	UserName := color.New(color.FgGreen).SprintFunc()
 	if m.ChannelID == State.Channel.ID {
-		State.AddMessage(m.Message)
+		//State.AddMessage(m.Message) //BROKEN
 		log.Printf("> %s > %s\n", UserName(m.Author.Username), m.ContentWithMentionsReplaced())
 	}
 }
