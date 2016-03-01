@@ -4,6 +4,7 @@ package main
 
 import (
 	"log"
+	"regexp"
 
 	"github.com/Rivalo/discord-cli/DiscordState"
 	"github.com/chzyer/readline"
@@ -74,6 +75,8 @@ func main() {
 		//Parse Commands
 		line = ParseForCommands(line)
 
+		line = ParseForMentions(line)
+
 		if line != "" {
 			State.Session.DiscordGo.ChannelMessageSend(State.Channel.ID, line)
 		}
@@ -89,4 +92,31 @@ func InitWindow() {
 	State.Enabled = true
 	Clear()
 	State.RetrieveMessages(10)
+}
+
+//ParseForMentions parses input string for mentions
+func ParseForMentions(line string) string {
+	r, err := regexp.Compile("\\@\\w+")
+	if err != nil {
+		Msg(ErrorMsg, "Regex Error: ", err)
+	}
+
+	lineByte := r.ReplaceAllFunc([]byte(line), ReplaceMentions)
+
+	return string(lineByte[:])
+}
+
+//ReplaceMentions replaces mentions to ID
+func ReplaceMentions(input []byte) []byte {
+	var OutputString string
+
+	SizeByte := len(input)
+	InputString := string(input[1:SizeByte])
+
+	if Member, ok := State.Members[InputString]; ok {
+		OutputString = "<@" + Member.User.ID + ">"
+	} else {
+		OutputString = "@" + InputString
+	}
+	return []byte(OutputString)
 }
