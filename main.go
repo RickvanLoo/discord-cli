@@ -50,19 +50,14 @@ func main() {
 	//Attach Even Handlers
 	State.Session.DiscordGo.AddHandler(newMessage)
 
-	//Print Welcome as a sign that the user has logged in.
-	user, _ := State.Session.DiscordGo.User("@me")
-	Msg(InfoMsg, "Welcome, %s!\n\n", user.Username)
-	Msg(InfoMsg, "Guild: %s, Channel: %s\n", State.Guild.Name, State.Channel.Name)
+	//Print Header
+	Header()
 
-	//Setup stdout logging
+	//Setup Readline
 	rl, err := readline.NewEx(&readline.Config{
 		Prompt:         "> ",
 		UniqueEditLine: true,
 	})
-	if err != nil {
-		panic(err)
-	}
 
 	defer rl.Close()
 	log.SetOutput(rl.Stderr()) // let "log" write to l.Stderr instead of os.Stderr
@@ -76,6 +71,7 @@ func main() {
 			break
 		}
 
+		//Parse Commands
 		line = ParseForCommands(line)
 
 		if line != "" {
