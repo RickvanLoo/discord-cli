@@ -4,18 +4,11 @@ import "github.com/Rivalo/discordgo_cli"
 
 //SetChannel sets the channel of the current State
 func (State *State) SetChannel(ID string) {
-	State.Channel = State.Channels[ID]
-}
-
-//UpdateChannels does a full update for the channels inside the State
-func (State *State) UpdateChannels() {
-	NewChannelList := make(map[string]*discordgo.Channel)
-
-	for _, Channel := range State.Guild.Channels {
-		NewChannelList[Channel.ID] = Channel
+	for _, Channel := range State.Channels {
+		if Channel.ID == ID {
+			State.Channel = Channel
+		}
 	}
-
-	State.Channels = NewChannelList
 }
 
 //AddMember adds Member to State

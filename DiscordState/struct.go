@@ -6,7 +6,7 @@ import "github.com/Rivalo/discordgo_cli"
 type State struct {
 	Guild    *discordgo.Guild
 	Channel  *discordgo.Channel
-	Channels map[string]*discordgo.Channel
+	Channels []*discordgo.Channel
 	Members  map[string]*discordgo.Member
 	Messages map[string]*discordgo.Message
 	Session  *Session
@@ -18,5 +18,5 @@ type Session struct {
 	Username  string
 	Password  string
 	DiscordGo *discordgo.Session
-	Guilds    map[string]*discordgo.Guild
+	Guilds    []*discordgo.Guild
 }

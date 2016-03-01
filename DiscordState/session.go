@@ -25,22 +25,13 @@ func (Session *Session) Start() error {
 	// Open the websocket and begin listening.
 	dg.Open()
 
-	Session.Guilds = make(map[string]*discordgo.Guild)
-
 	//Retrieve GuildID's from current User
 	UserGuilds, err := dg.UserGuilds()
 	if err != nil {
 		return err
 	}
 
-	//Retrieve Guilds from GuildIDs
-	for _, UserGuild := range UserGuilds {
-		Guild, err := dg.Guild(UserGuild.ID)
-		if err != nil {
-			return err
-		}
-		Session.Guilds[Guild.ID] = Guild
-	}
+	Session.Guilds = UserGuilds
 
 	Session.DiscordGo = dg
 
@@ -48,7 +39,7 @@ func (Session *Session) Start() error {
 }
 
 //NewState attaches a new state to the Guild inside a Session, and fills it.
-func (Session *Session) NewState(GuildID string) *State {
+func (Session *Session) NewState(GuildID string) (*State, error) {
 	State := new(State)
 
 	//Disable Event Handling
@@ -58,15 +49,20 @@ func (Session *Session) NewState(GuildID string) *State {
 	State.Session = Session
 
 	//Set Guild
-	State.Guild = Session.Guilds[GuildID]
+	for _, guildID := range Session.Guilds {
+		if guildID.ID == GuildID {
+			Guild, err := State.Session.DiscordGo.Guild(guildID.ID)
+			if err != nil {
+				return nil, err
+			}
+
+			State.Guild = Guild
+		}
+	}
 
 	//Retrieve Channels
 
-	State.Channels = make(map[string]*discordgo.Channel)
-
-	for _, Channel := range State.Guild.Channels {
-		State.Channels[Channel.ID] = Channel
-	}
+	State.Channels = State.Guild.Channels
 
 	//Retrieve Members
 
@@ -76,16 +72,5 @@ func (Session *Session) NewState(GuildID string) *State {
 		State.Members[Member.User.ID] = Member
 	}
 
-	return State
-}
-
-//Update does a full update for the Guilds inside the State
-func (Session *Session) Update() {
-	NewGuildList := make(map[string]*discordgo.Guild)
-
-	for _, Guild := range Session.DiscordGo.State.Guilds {
-		NewGuildList[Guild.ID] = Guild
-	}
-
-	Session.Guilds = NewGuildList
+	return State, nil
 }
