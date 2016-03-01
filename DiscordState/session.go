@@ -69,7 +69,7 @@ func (Session *Session) NewState(GuildID string) (*State, error) {
 	State.Members = make(map[string]*discordgo.Member)
 
 	for _, Member := range State.Guild.Members {
-		State.Members[Member.User.ID] = Member
+		State.Members[Member.User.Username] = Member
 	}
 
 	return State, nil

@@ -34,7 +34,7 @@ Start:
 
 	ResponseInteger, err := strconv.Atoi(response)
 	if err != nil {
-		Msg(ErrorMsg, "(GU) Error: %s\n", err)
+		Msg(ErrorMsg, "(GU) Conversion Error: %s\n", err)
 		goto Start
 	}
 
@@ -76,7 +76,7 @@ Start:
 
 	ResponseInteger, err := strconv.Atoi(response)
 	if err != nil {
-		Msg(ErrorMsg, "(CH) Error: %s\n", err)
+		Msg(ErrorMsg, "(CH) Conversion Error: %s\n", err)
 		goto Start
 	}
 
@@ -168,7 +168,7 @@ Start:
 
 	ResponseInteger, err := strconv.Atoi(response)
 	if err != nil {
-		Msg(ErrorMsg, "(GUD) Error: %s\n", err)
+		Msg(ErrorMsg, "(GUD) Conversion Error: %s\n", err)
 		goto Start
 	}
 
@@ -179,7 +179,7 @@ Start:
 
 	Guild, err := Session.DiscordGo.Guild(SelectMap[ResponseInteger])
 	if err != nil {
-		Msg(ErrorMsg, "(GUD) Error: %s\n", err)
+		Msg(ErrorMsg, "(GUD) Unknown Error: %s\n", err)
 		goto Start
 	}
 
