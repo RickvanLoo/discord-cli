@@ -44,13 +44,10 @@ func main() {
 		log.Fatalln(err)
 	}
 
-	//NewState
-	SelectGuild()
-	SelectChannel()
-	State.Enabled = true
-	Clear()
-	State.RetrieveMessages(10)
+	//Attach New Window
+	InitWindow()
 
+	//Attach Even Handlers
 	State.Session.DiscordGo.AddHandler(newMessage)
 
 	//Print Welcome as a sign that the user has logged in.
@@ -79,10 +76,21 @@ func main() {
 			break
 		}
 
+		line = ParseForCommands(line)
+
 		if line != "" {
 			State.Session.DiscordGo.ChannelMessageSend(State.Channel.ID, line)
 		}
 	}
 
 	return
+}
+
+//InitWindow creates a New CLI Window
+func InitWindow() {
+	SelectGuildMenu()
+	SelectChannelMenu()
+	State.Enabled = true
+	Clear()
+	State.RetrieveMessages(10)
 }

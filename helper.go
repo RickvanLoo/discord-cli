@@ -40,3 +40,10 @@ func Clear() {
 	c.Stdout = os.Stdout
 	c.Run()
 }
+
+//Header simply prints a header containing state/session information
+func Header() {
+	user, _ := State.Session.DiscordGo.User("@me")
+	Msg(InfoMsg, "Welcome, %s!\n\n", user.Username)
+	Msg(InfoMsg, "Guild: %s, Channel: %s\n", State.Guild.Name, State.Channel.Name)
+}

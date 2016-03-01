@@ -5,8 +5,8 @@ import (
 	"log"
 )
 
-//SelectGuild is a menu item that creates a new State on basis of Guild selection
-func SelectGuild() {
+//SelectGuildMenu is a menu item that creates a new State on basis of Guild selection
+func SelectGuildMenu() {
 	var err error
 
 	Msg(InfoMsg, "Select a Guild:\n")
@@ -27,15 +27,19 @@ func SelectGuild() {
 	}
 }
 
-//SelectChannel is a menu item that sets the current channel
-func SelectChannel() {
+//SelectChannelMenu is a menu item that sets the current channel
+func SelectChannelMenu() {
 	Msg(InfoMsg, "Select a Channel:\n")
 
 	SelectMap := make(map[int]string)
+	SelectID := 0
 
-	for id, channel := range State.Channels {
-		SelectMap[id] = channel.ID
-		Msg(TextMsg, "[%d] %s\n", id, channel.Name)
+	for _, channel := range State.Channels {
+		if channel.Type == "text" {
+			SelectMap[SelectID] = channel.ID
+			Msg(TextMsg, "[%d] %s\n", SelectID, channel.Name)
+			SelectID++
+		}
 	}
 
 	var response int
