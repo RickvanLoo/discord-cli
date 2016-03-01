@@ -23,16 +23,21 @@ const (
 //Version is current version const
 const Version = "v0.3.0-DEVELOP"
 
+//State is global State
+var State *DiscordState.State
+
 //MsgType is a string containing global message type
 type MsgType string
 
 func main() {
-
+	//Initialize Config
+	GetConfig()
+	CheckState()
 	Clear()
 	Msg(HeaderMsg, "discord-cli - version: %s\n\n", Version)
 
 	//NewSession
-	Session := DiscordState.NewSession("thismail@doesnotexist.com", "Pass") //Please don't abuse
+	Session := DiscordState.NewSession(Config.Username, Config.Password) //Please don't abuse
 	err := Session.Start()
 	if err != nil {
 		log.Println("Session Failed")
@@ -40,7 +45,7 @@ func main() {
 	}
 
 	//NewState
-	State := Session.NewState("148824204219777024")
+	State = Session.NewState("148824204219777024")
 	State.SetChannel("148824204219777024")
 
 	State.Session.DiscordGo.AddHandler(newMessage)
@@ -87,11 +92,6 @@ func Msg(MsgType, format string, a ...interface{}) {
 	Info := color.New(color.FgYellow, color.Bold)
 	Head := color.New(color.FgCyan, color.Bold)
 	Text := color.New(color.FgWhite)
-
-	//Testing Colors
-	//Info := color.New(color.FgMagenta, color.CrossedOut)
-	//Head := color.New(color.FgMagenta, color.CrossedOut)
-	//Text := color.New(color.FgMagenta, color.CrossedOut)
 
 	switch MsgType {
 	case "Error":

@@ -1,10 +1,10 @@
 package main
 
 import (
-	"fmt"
-	"time"
+	"log"
 
 	"github.com/Rivalo/discordgo_cli"
+	"github.com/fatih/color"
 )
 
 // This function will be called (due to AddHandler above) every time a new
@@ -12,5 +12,8 @@ import (
 func newMessage(s *discordgo.Session, m *discordgo.MessageCreate) {
 
 	// Print message to stdout.
-	fmt.Printf("%20s %20s %20s > %s\n", m.ChannelID, time.Now().Format(time.Stamp), m.Author.Username, m.Content)
+	UserName := color.New(color.FgGreen).SprintFunc()
+	if m.ChannelID == State.Channel.ID {
+		log.Printf("> %s > %s\n", UserName(m.Author.Username), m.Content)
+	}
 }
