@@ -91,6 +91,7 @@ Start:
 //ExtraGuildMenuOptions prints and handles extra options for SelectGuildMenu
 func ExtraGuildMenuOptions() {
 Start:
+	Msg(InfoMsg, "Extra Options:\n")
 	Msg(TextMsg, "[n] Join New Server\n")
 	Msg(TextMsg, "[d] Leave Server\n")
 	Msg(TextMsg, "[o] Join Official discord-cli Server\n")
@@ -116,12 +117,82 @@ Start:
 		fmt.Scanf("%s\n", &response)
 		if response == "y" {
 			Session.DiscordGo.InviteAccept(Invite.Code)
+			err := Session.Update()
+			if err != nil {
+				Msg(ErrorMsg, "Session Update Failed: %s\n", err)
+			}
 		} else {
 			goto Start
 		}
+	case "o":
+		_, err := Session.DiscordGo.InviteAccept("0pXWCo5RQbVuFHDM")
+		if err != nil {
+			Msg(ErrorMsg, "Joining Official discord-cli Server failed\n")
+			goto Start
+		}
+		Msg(InfoMsg, "Joined Official discord-cli Server!\n")
+	case "d":
+		LeaveServerMenu()
+		goto Start
 	default:
 		return
 	}
 
 	return
+}
+
+//LeaveServerMenu is a copy of SelectGuildMenu that leaves instead of selects
+func LeaveServerMenu() {
+	var err error
+
+Start:
+
+	Msg(InfoMsg, "Leave a Guild:\n")
+
+	SelectMap := make(map[int]string)
+	SelectID := 0
+
+	for _, guild := range Session.Guilds {
+		SelectMap[SelectID] = guild.ID
+		Msg(TextMsg, "[%d] %s\n", SelectID, guild.Name)
+		SelectID++
+	}
+	Msg(TextMsg, "[b] Go Back\n")
+
+	var response string
+	fmt.Scanf("%s\n", &response)
+
+	if response == "b" {
+		return
+	}
+
+	ResponseInteger, err := strconv.Atoi(response)
+	if err != nil {
+		Msg(ErrorMsg, "(GUD) Error: %s\n", err)
+		goto Start
+	}
+
+	if ResponseInteger > SelectID-1 || ResponseInteger < 0 {
+		Msg(ErrorMsg, "(GUD) Error: ID is out of bounds\n")
+		goto Start
+	}
+
+	Guild, err := Session.DiscordGo.Guild(SelectMap[ResponseInteger])
+	if err != nil {
+		Msg(ErrorMsg, "(GUD) Error: %s\n", err)
+		goto Start
+	}
+
+	Msg(TextMsg, "Leave %s ? [y/n]:\n", Guild.Name)
+	fmt.Scanf("%s\n", &response)
+	if response == "y" {
+		Session.DiscordGo.GuildLeave(Guild.ID)
+		err := Session.Update()
+		if err != nil {
+			Msg(ErrorMsg, "Session Update Failed: %s\n", err)
+		}
+	} else {
+		goto Start
+	}
+
 }
