@@ -9,8 +9,10 @@ import (
 
 //Configuration is a struct that contains all configuration fields
 type Configuration struct {
-	Username string `json:"username"`
-	Password string `json:"password"`
+	Username       string `json:"username"`
+	Password       string `json:"password"`
+	MessageDefault bool   `json:"messagedefault"`
+	Messages       int    `json:"messages"`
 }
 
 // Config is the global configuration of discord-cli
@@ -50,6 +52,9 @@ func CreateConfig() {
 	}
 
 	var EmptyStruct Configuration
+	//Set Default values
+	EmptyStruct.Messages = 10
+	EmptyStruct.MessageDefault = true
 
 	//Create Folder
 	err = os.MkdirAll(usr.HomeDir+"/.config/discord-cli/", os.ModePerm)

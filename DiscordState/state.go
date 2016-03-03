@@ -23,6 +23,11 @@ func (State *State) DelMember(Member *discordgo.Member) {
 
 //AddMessage adds Message to State
 func (State *State) AddMessage(Message *discordgo.Message) {
+	//Do not add if Amount <= 0
+	if State.MessageAmount <= 0 {
+		return
+	}
+
 	//Remove First Message if next message is going to increase length past MessageAmount
 	if len(State.Messages) == State.MessageAmount {
 		State.Messages = append(State.Messages[:0], State.Messages[1:]...)

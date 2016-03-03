@@ -20,6 +20,7 @@ func newMessage(s *discordgo.Session, m *discordgo.MessageCreate) {
 	UserName := color.New(color.FgGreen).SprintFunc()
 	if m.ChannelID == State.Channel.ID {
 		State.AddMessage(m.Message)
+
 		Messages := ReceivingMessageParser(m.Message)
 
 		for _, Msg := range Messages {

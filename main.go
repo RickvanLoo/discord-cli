@@ -21,9 +21,6 @@ const (
 //Version is current version const
 const Version = "v0.3.0-DEVELOP"
 
-//MessageAmount contains default amount of Messages kept inside memory
-const MessageAmount = 10
-
 //Session is global Session
 var Session *DiscordState.Session
 
@@ -97,8 +94,10 @@ func InitWindow() {
 func ShowContent() {
 	Clear()
 	Header()
-	State.RetrieveMessages(MessageAmount)
-	PrintMessages(MessageAmount)
+	if Config.MessageDefault {
+		State.RetrieveMessages(Config.Messages)
+		PrintMessages(Config.Messages)
+	}
 }
 
 //ParseForMentions parses input string for mentions

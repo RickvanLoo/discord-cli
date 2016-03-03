@@ -83,6 +83,9 @@ func (Session *Session) NewState(GuildID string, MessageAmount int) (*State, err
 	//Set MessageAmount
 	State.MessageAmount = MessageAmount
 
+	//Init Messages
+	State.Messages = []*discordgo.Message{}
+
 	return State, nil
 }
 
