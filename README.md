@@ -8,7 +8,7 @@ Join our Discord Chat! https://discord.gg/0pXWCo5RQbVuFHDM
 ![I suck at English, while 256 colors is enough for everyone](screenshot.png)
 
 <sub>Disclaimer: Currently only tested on Linux.</sub>
-<sub><sub> It also looks pretty bad in its current state.<sub><sub>
+
 ### How to Install the Master branch?
 Currently the easiest working way to install is to use the Go tools. I'm looking at using GCCGO and makefiles to reduce installation steps, and make setting PATHS unnecessary.
 * Install the Go Tools and setup the `$GOPATH` (There are loads of tutorial for this part)
@@ -25,8 +25,8 @@ Configuration files are being stored in JSON format and are automatically create
 | ------------- |-------------|
 | username      | Discord Username (emailaddress) |
 | password      | Discord Password |
-| guild         | Default Discord Server (Currently `null` because this function does not work yet) |
-| channel       | Default Discord Text Channel (Currently `null` because this function does not work yet) |
+| messagedefault| (true or false) Display messages automatically|
+| messages   | Amount of Messages kept in memory |
 
 NOTE: The Configuration settings are likely to change. Breaking updates are stated in the release section. To solve problems, delete `~/.config/discord-cli/config.json` and restart discord-cli.
 
@@ -34,7 +34,8 @@ NOTE: The Configuration settings are likely to change. Breaking updates are stat
 When inside a text channel, the following commands are available:
 
 | Command       | Function         |
-| ------------- |:-------------:|
+| ------------- |-------------|
 | :q      | Quits discord-cli |
-| :d      | 'Disconnect' Guild and go back to selection menu|
-| :c      | Change listening Channel inside Guild
+| :g      | Change listening Guild|
+| :c      | Change listening Channel inside Guild |
+| :m [n]      | Display last [n] messages: ex. `:m 2` displays last two messages |
