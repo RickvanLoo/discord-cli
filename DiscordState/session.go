@@ -1,7 +1,11 @@
 //Package DiscordState is an abstraction layer that gives proper structs and functions to get and set the current state of the cli server
 package DiscordState
 
-import "github.com/Rivalo/discordgo_cli"
+import (
+	"fmt"
+
+	"github.com/Rivalo/discordgo_cli"
+)
 
 //!----- Session -----!//
 
@@ -16,6 +20,8 @@ func NewSession(Username, Password string) *Session {
 
 //Start attaches a discordgo listener to the Sessions and fills it.
 func (Session *Session) Start() error {
+
+	fmt.Printf("*Starting Session...")
 
 	dg, err := discordgo.New(Session.Username, Session.Password)
 	if err != nil {
@@ -34,6 +40,8 @@ func (Session *Session) Start() error {
 	Session.Guilds = UserGuilds
 
 	Session.DiscordGo = dg
+
+	fmt.Printf(" PASSED!\n")
 
 	return nil
 }
