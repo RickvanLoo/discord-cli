@@ -2,6 +2,7 @@ package main
 
 import (
 	"log"
+	"strings"
 
 	"github.com/Rivalo/discordgo_cli"
 	"github.com/fatih/color"
@@ -20,6 +21,18 @@ func newMessage(s *discordgo.Session, m *discordgo.MessageCreate) {
 	UserName := color.New(color.FgGreen).SprintFunc()
 	if m.ChannelID == State.Channel.ID {
 		//State.AddMessage(m.Message) //BROKEN
-		log.Printf("> %s > %s\n", UserName(m.Author.Username), m.ContentWithMentionsReplaced())
+		Message := m.ContentWithMentionsReplaced()
+
+		//Parse images
+		for _, Attachment := range m.Attachments {
+			Message = Message + " " + Attachment.URL
+		}
+
+		// MultiLine comment parsing
+		Messages := strings.Split(Message, "\n")
+
+		for _, Msg := range Messages {
+			log.Printf("> %s > %s\n", UserName(m.Author.Username), Msg)
+		}
 	}
 }
