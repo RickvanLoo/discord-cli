@@ -7,8 +7,16 @@ import (
 	"os/user"
 )
 
-// State is the current state of the client
-var State Session
+//Configuration is a struct that contains all configuration fields
+type Configuration struct {
+	Username       string `json:"username"`
+	Password       string `json:"password"`
+	MessageDefault bool   `json:"messagedefault"`
+	Messages       int    `json:"messages"`
+}
+
+// Config is the global configuration of discord-cli
+var Config Configuration
 
 //GetConfig retrieves configuration file from ~./config/discord-cli, if it doesn't exist it calls CreateConfig()
 func GetConfig() {
@@ -28,7 +36,7 @@ func GetConfig() {
 
 	//Decode File
 	decoder := json.NewDecoder(file)
-	err = decoder.Decode(&State)
+	err = decoder.Decode(&Config)
 	if err != nil {
 		log.Println("Failed to decode configuration file")
 		log.Fatalf("Error: %s", err)
@@ -43,7 +51,10 @@ func CreateConfig() {
 		log.Fatal(err)
 	}
 
-	var EmptyStruct Session
+	var EmptyStruct Configuration
+	//Set Default values
+	EmptyStruct.Messages = 10
+	EmptyStruct.MessageDefault = true
 
 	//Create Folder
 	err = os.MkdirAll(usr.HomeDir+"/.config/discord-cli/", os.ModePerm)
@@ -80,11 +91,11 @@ func CheckState() {
 		log.Fatal(err)
 	}
 
-	if State.Username == "" {
+	if Config.Username == "" {
 		log.Fatalln("No Username Specified, please edit " + usr.HomeDir + "/.config/discord-cli/config.json")
 	}
 
-	if State.Password == "" {
+	if Config.Password == "" {
 		log.Fatalln("No Password Specified, please edit " + usr.HomeDir + "/.config/discord-cli/config.json")
 	}
 

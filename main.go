@@ -3,60 +3,59 @@
 package main
 
 import (
-	"fmt"
 	"log"
-	"os"
-	"os/exec"
+	"regexp"
 
-	"github.com/Rivalo/discordgo_cli"
+	"github.com/Rivalo/discord-cli/DiscordState"
 	"github.com/chzyer/readline"
-	"github.com/fatih/color"
 )
 
-// Session contains the current settings of the client
-type Session struct {
-	Username   string             `json:"username"`
-	Password   string             `json:"password"`
-	Guild      *discordgo.Guild   `json:"guild"`
-	Channel    *discordgo.Channel `json:"channel"`
-	InsertMode bool               `json:"-"`
-}
+//Global Message Types
+const (
+	ErrorMsg  = "Error"
+	InfoMsg   = "Info"
+	HeaderMsg = "Head"
+	TextMsg   = "Text"
+)
+
+//Version is current version const
+const Version = "v0.3.0-DEVELOP"
+
+//Session is global Session
+var Session *DiscordState.Session
+
+//State is global State
+var State *DiscordState.State
+
+//MsgType is a string containing global message type
+type MsgType string
 
 func main() {
 	//Initialize Config
 	GetConfig()
 	CheckState()
-	State.InsertMode = false
 	Clear()
-	Header("V0.2.0")
+	Msg(HeaderMsg, "discord-cli - version: %s\n\n", Version)
 
-	// Connect to Discord
-	dg, err := discordgo.New(State.Username, State.Password)
+	//NewSession
+	Session = DiscordState.NewSession(Config.Username, Config.Password) //Please don't abuse
+	err := Session.Start()
 	if err != nil {
-		fmt.Println(err)
-		return
+		log.Println("Session Failed")
+		log.Fatalln(err)
 	}
 
-	// Register messageCreate as a callback for the OnMessageCreate event.
-	dg.AddHandler(messageCreate)
+	//Attach New Window
+	InitWindow()
 
-	// Open the websocket and begin listening.
-	dg.Open()
+	//Attach Even Handlers
+	State.Session.DiscordGo.AddHandler(newMessage)
 
-	//Print Welcome as a sign that the user has logged in.
-	Welcome(dg)
-
-	//SetChannelState
-	SetGuildState(dg)
-
-	//Setup stdout logging
+	//Setup Readline
 	rl, err := readline.NewEx(&readline.Config{
 		Prompt:         "> ",
 		UniqueEditLine: true,
 	})
-	if err != nil {
-		panic(err)
-	}
 
 	defer rl.Close()
 	log.SetOutput(rl.Stderr()) // let "log" write to l.Stderr instead of os.Stderr
@@ -70,34 +69,60 @@ func main() {
 			break
 		}
 
-		line = ParseForCommands(line, dg)
+		//Parse Commands
+		line = ParseForCommands(line)
+
+		line = ParseForMentions(line)
 
 		if line != "" {
-			dg.ChannelMessageSend(State.Channel.ID, line)
+			State.Session.DiscordGo.ChannelMessageSend(State.Channel.ID, line)
 		}
 	}
 
 	return
 }
 
-//Header prints a Cyan header to the TERM containing the program title and its version
-func Header(version string) {
-	d := color.New(color.FgCyan, color.Bold)
-	d.Printf("discord-cli - version: %s\n\n", version)
+//InitWindow creates a New CLI Window
+func InitWindow() {
+	SelectGuildMenu()
+	SelectChannelMenu()
+	State.Enabled = true
+	ShowContent()
 }
 
-//Clear clears the terminal => This barely works, please fix
-func Clear() {
-	c := exec.Command("clear")
-	c.Stdout = os.Stdout
-	c.Run()
+//ShowContent shows defaulth Channel content
+func ShowContent() {
+	Clear()
+	Header()
+	if Config.MessageDefault {
+		State.RetrieveMessages(Config.Messages)
+		PrintMessages(Config.Messages)
+	}
 }
 
-//Welcome sends an acknowledge to the terminal that it is listening, and prints the current Username
-func Welcome(dg *discordgo.Session) {
-	d := color.New(color.FgYellow, color.Bold)
-	d.Printf("Listening!\n\n")
+//ParseForMentions parses input string for mentions
+func ParseForMentions(line string) string {
+	r, err := regexp.Compile("\\@\\w+")
+	if err != nil {
+		Msg(ErrorMsg, "Regex Error: ", err)
+	}
 
-	user, _ := dg.User("@me")
-	d.Printf("Welcome, %s!\n\n", user.Username)
+	lineByte := r.ReplaceAllFunc([]byte(line), ReplaceMentions)
+
+	return string(lineByte[:])
+}
+
+//ReplaceMentions replaces mentions to ID
+func ReplaceMentions(input []byte) []byte {
+	var OutputString string
+
+	SizeByte := len(input)
+	InputString := string(input[1:SizeByte])
+
+	if Member, ok := State.Members[InputString]; ok {
+		OutputString = "<@" + Member.User.ID + ">"
+	} else {
+		OutputString = "@" + InputString
+	}
+	return []byte(OutputString)
 }
