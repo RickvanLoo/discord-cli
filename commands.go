@@ -1,7 +1,13 @@
 package main
 
+import (
+	"strconv"
+	"strings"
+)
+
 //ParseForCommands parses input for Commands, returns message if no command specified, else return is empty
 func ParseForCommands(line string) string {
+	//One Key Commands
 	switch line {
 	case ":g":
 		SelectGuild()
@@ -11,7 +17,26 @@ func ParseForCommands(line string) string {
 		line = ""
 	default:
 		// Nothing
+	}
 
+	//Argument Commands
+	if strings.HasPrefix(line, ":m") {
+		AmountStr := strings.Split(line, " ")
+		if len(AmountStr) < 2 {
+			Msg(ErrorMsg, "[:m] No Arguments \n")
+			return ""
+		}
+
+		Amount, err := strconv.Atoi(AmountStr[1])
+		if err != nil {
+			Msg(ErrorMsg, "[:m] Argument Error: %s \n", err)
+			return ""
+		}
+
+		Msg(InfoMsg, "Printing last %d messages!\n", Amount)
+		State.RetrieveMessages(Amount)
+		PrintMessages(Amount)
+		line = ""
 	}
 
 	return line

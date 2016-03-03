@@ -69,11 +69,13 @@ func ReceivingMessageParser(m *discordgo.Message) []string {
 //PrintMessages prints amount of Messages to CLI
 func PrintMessages(Amount int) {
 	UserName := color.New(color.FgGreen).SprintFunc()
-	for _, m := range State.Messages {
-		Messages := ReceivingMessageParser(m)
-		
-		for _, Msg := range Messages {
-			log.Printf("> %s > %s\n", UserName(m.Author.Username), Msg)
+	for Key, m := range State.Messages {
+		if Key >= len(State.Messages)-Amount {
+			Messages := ReceivingMessageParser(m)
+
+			for _, Msg := range Messages {
+				log.Printf("> %s > %s\n", UserName(m.Author.Username), Msg)
+			}
 		}
 	}
 }
