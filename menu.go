@@ -43,7 +43,7 @@ Start:
 		goto Start
 	}
 
-	State, err = Session.NewState(SelectMap[ResponseInteger])
+	State, err = Session.NewState(SelectMap[ResponseInteger], MessageAmount)
 	if err != nil {
 		log.Fatal(err)
 	}

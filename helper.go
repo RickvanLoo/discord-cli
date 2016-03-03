@@ -1,9 +1,12 @@
 package main
 
 import (
+	"log"
 	"os"
 	"os/exec"
+	"strings"
 
+	"github.com/Rivalo/discordgo_cli"
 	"github.com/fatih/color"
 )
 
@@ -46,4 +49,31 @@ func Header() {
 	user, _ := State.Session.DiscordGo.User("@me")
 	Msg(InfoMsg, "Welcome, %s!\n\n", user.Username)
 	Msg(InfoMsg, "Guild: %s, Channel: %s\n", State.Guild.Name, State.Channel.Name)
+}
+
+//ReceivingMessageParser parses receiving message for mentions, images and MultiLine and returns string array
+func ReceivingMessageParser(m *discordgo.Message) []string {
+	Message := m.ContentWithMentionsReplaced()
+
+	//Parse images
+	for _, Attachment := range m.Attachments {
+		Message = Message + " " + Attachment.URL
+	}
+
+	// MultiLine comment parsing
+	Messages := strings.Split(Message, "\n")
+
+	return Messages
+}
+
+//PrintMessages prints amount of Messages to CLI
+func PrintMessages(Amount int) {
+	UserName := color.New(color.FgGreen).SprintFunc()
+	for _, m := range State.Messages {
+		Messages := ReceivingMessageParser(m)
+		
+		for _, Msg := range Messages {
+			log.Printf("> %s > %s\n", UserName(m.Author.Username), Msg)
+		}
+	}
 }

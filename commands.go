@@ -23,8 +23,7 @@ func SelectGuild() {
 	SelectGuildMenu()
 	SelectChannelMenu()
 	State.Enabled = true
-	Clear()
-	Header()
+	ShowContent()
 }
 
 //SelectChannel selects a new Channel
@@ -32,6 +31,5 @@ func SelectChannel() {
 	State.Enabled = false
 	SelectChannelMenu()
 	State.Enabled = true
-	Clear()
-	Header()
+	ShowContent()
 }

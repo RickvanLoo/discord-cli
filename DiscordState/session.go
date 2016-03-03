@@ -46,8 +46,8 @@ func (Session *Session) Start() error {
 	return nil
 }
 
-//NewState attaches a new state to the Guild inside a Session, and fills it.
-func (Session *Session) NewState(GuildID string) (*State, error) {
+//NewState (constructor) attaches a new state to the Guild inside a Session, and fills it.
+func (Session *Session) NewState(GuildID string, MessageAmount int) (*State, error) {
 	State := new(State)
 
 	//Disable Event Handling
@@ -79,6 +79,9 @@ func (Session *Session) NewState(GuildID string) (*State, error) {
 	for _, Member := range State.Guild.Members {
 		State.Members[Member.User.Username] = Member
 	}
+
+	//Set MessageAmount
+	State.MessageAmount = MessageAmount
 
 	return State, nil
 }

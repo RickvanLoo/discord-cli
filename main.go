@@ -21,6 +21,9 @@ const (
 //Version is current version const
 const Version = "v0.3.0-DEVELOP"
 
+//MessageAmount contains default amount of Messages kept inside memory
+const MessageAmount = 10
+
 //Session is global Session
 var Session *DiscordState.Session
 
@@ -50,9 +53,6 @@ func main() {
 
 	//Attach Even Handlers
 	State.Session.DiscordGo.AddHandler(newMessage)
-
-	//Print Header
-	Header()
 
 	//Setup Readline
 	rl, err := readline.NewEx(&readline.Config{
@@ -90,8 +90,15 @@ func InitWindow() {
 	SelectGuildMenu()
 	SelectChannelMenu()
 	State.Enabled = true
+	ShowContent()
+}
+
+//ShowContent shows defaulth Channel content
+func ShowContent() {
 	Clear()
-	State.RetrieveMessages(10)
+	Header()
+	State.RetrieveMessages(MessageAmount)
+	PrintMessages(MessageAmount)
 }
 
 //ParseForMentions parses input string for mentions
