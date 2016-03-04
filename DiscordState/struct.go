@@ -17,6 +17,7 @@ type State struct {
 //Session contains the 'state' of the attached server
 type Session struct {
 	Username  string
+	User      *discordgo.User
 	Password  string
 	DiscordGo *discordgo.Session
 	Guilds    []*discordgo.Guild

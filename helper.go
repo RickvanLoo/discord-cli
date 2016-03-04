@@ -46,8 +46,7 @@ func Clear() {
 
 //Header simply prints a header containing state/session information
 func Header() {
-	user, _ := State.Session.DiscordGo.User("@me")
-	Msg(InfoMsg, "Welcome, %s!\n\n", user.Username)
+	Msg(InfoMsg, "Welcome, %s!\n\n", State.Session.User.Username)
 	Msg(InfoMsg, "Guild: %s, Channel: %s\n", State.Guild.Name, State.Channel.Name)
 }
 
@@ -78,4 +77,23 @@ func PrintMessages(Amount int) {
 			}
 		}
 	}
+}
+
+//Notify uses Notify-Send from libnotify to send a notification when a mention arrives.
+func Notify(m *discordgo.Message) {
+	Channel, err := State.Session.DiscordGo.Channel(m.ChannelID)
+	if err != nil {
+		Msg(ErrorMsg, "(NOT) Channel Error: %s\n", err)
+	}
+	Guild, err := State.Session.DiscordGo.Guild(Channel.GuildID)
+	if err != nil {
+		Msg(ErrorMsg, "(NOT) Guild Error: %s\n", err)
+	}
+	Title := "@" + m.Author.Username + " : " + Guild.Name + "/" + Channel.Name
+	cmd := exec.Command("notify-send", Title, m.ContentWithMentionsReplaced())
+	err = cmd.Start()
+	if err != nil {
+		Msg(ErrorMsg, "(NOT) Check if libnotify is installed, or disable notifications.\n")
+	}
+
 }

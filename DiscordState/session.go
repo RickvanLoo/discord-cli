@@ -41,6 +41,8 @@ func (Session *Session) Start() error {
 
 	Session.DiscordGo = dg
 
+	Session.User, _ = Session.DiscordGo.User("@me")
+
 	fmt.Printf(" PASSED!\n")
 
 	return nil

@@ -2,6 +2,7 @@ package main
 
 import (
 	"log"
+	"strings"
 
 	"github.com/Rivalo/discordgo_cli"
 	"github.com/fatih/color"
@@ -10,6 +11,11 @@ import (
 // This function will be called (due to AddHandler above) every time a new
 // message is created on any channel that the autenticated user has access to.
 func newMessage(s *discordgo.Session, m *discordgo.MessageCreate) {
+
+	Mention := "@" + State.Session.User.Username
+	if strings.Contains(m.ContentWithMentionsReplaced(), Mention) {
+		go Notify(m.Message)
+	}
 
 	// Do nothing when State is disabled
 	if !State.Enabled {
