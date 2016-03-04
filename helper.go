@@ -1,10 +1,11 @@
 package main
 
 import (
-	"log"
+	"fmt"
 	"os"
 	"os/exec"
 	"strings"
+	"time"
 
 	"github.com/Rivalo/discordgo_cli"
 	"github.com/fatih/color"
@@ -67,13 +68,14 @@ func ReceivingMessageParser(m *discordgo.Message) []string {
 
 //PrintMessages prints amount of Messages to CLI
 func PrintMessages(Amount int) {
-	UserName := color.New(color.FgGreen).SprintFunc()
 	for Key, m := range State.Messages {
 		if Key >= len(State.Messages)-Amount {
 			Messages := ReceivingMessageParser(m)
 
 			for _, Msg := range Messages {
-				log.Printf("> %s > %s\n", UserName(m.Author.Username), Msg)
+				//log.Printf("> %s > %s\n", UserName(m.Author.Username), Msg)
+				MessagePrint(m.Timestamp, m.Author.Username, Msg)
+
 			}
 		}
 	}
@@ -96,4 +98,12 @@ func Notify(m *discordgo.Message) {
 		Msg(ErrorMsg, "(NOT) Check if libnotify is installed, or disable notifications.\n")
 	}
 
+}
+
+//MessagePrint prints one correctly formatted Message to stdout
+func MessagePrint(Time, Username, Content string) {
+	UserName := color.New(color.FgGreen).SprintFunc()
+	TimeStamp, _ := time.Parse(time.RFC3339, Time)
+	LocalTime := TimeStamp.Local().Format("2006/01/02 15:04:05")
+	fmt.Printf("%s > %s > %s\n", LocalTime, UserName(Username), Content)
 }

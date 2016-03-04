@@ -1,17 +1,15 @@
 package main
 
 import (
-	"log"
 	"strings"
 
 	"github.com/Rivalo/discordgo_cli"
-	"github.com/fatih/color"
 )
 
 // This function will be called (due to AddHandler above) every time a new
 // message is created on any channel that the autenticated user has access to.
 func newMessage(s *discordgo.Session, m *discordgo.MessageCreate) {
-
+	//Global Mentions
 	Mention := "@" + State.Session.User.Username
 	if strings.Contains(m.ContentWithMentionsReplaced(), Mention) {
 		go Notify(m.Message)
@@ -22,15 +20,15 @@ func newMessage(s *discordgo.Session, m *discordgo.MessageCreate) {
 		return
 	}
 
-	// Print message to stdout.
-	UserName := color.New(color.FgGreen).SprintFunc()
+	//State Messages
 	if m.ChannelID == State.Channel.ID {
 		State.AddMessage(m.Message)
 
 		Messages := ReceivingMessageParser(m.Message)
 
 		for _, Msg := range Messages {
-			log.Printf("> %s > %s\n", UserName(m.Author.Username), Msg)
+			MessagePrint(m.Timestamp, m.Author.Username, Msg)
+			//log.Printf("> %s > %s\n", UserName(m.Author.Username), Msg)
 		}
 	}
 }
