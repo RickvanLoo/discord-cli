@@ -70,10 +70,6 @@ func (Session *Session) NewState(GuildID string, MessageAmount int) (*State, err
 		}
 	}
 
-	//Retrieve Channels
-
-	State.Channels = State.Guild.Channels
-
 	//Retrieve Members
 
 	State.Members = make(map[string]*discordgo.Member)
@@ -82,11 +78,35 @@ func (Session *Session) NewState(GuildID string, MessageAmount int) (*State, err
 		State.Members[Member.User.Username] = Member
 	}
 
+	//RetrieveMemberRoles
+	State.MemberRole = make(map[string]*discordgo.Role)
+
+	for _, Member := range State.Guild.Members {
+		var MemberRole string
+
+		if len(Member.Roles) > 0 {
+			MemberRole = Member.Roles[0]
+		} else {
+			break
+		}
+
+		for _, Role := range State.Guild.Roles {
+			if Role.ID == MemberRole {
+				State.MemberRole[Member.User.Username] = Role
+				break
+			}
+		}
+	}
+
 	//Set MessageAmount
 	State.MessageAmount = MessageAmount
 
 	//Init Messages
 	State.Messages = []*discordgo.Message{}
+
+	//Retrieve Channels
+
+	State.Channels = State.Guild.Channels
 
 	return State, nil
 }

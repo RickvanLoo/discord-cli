@@ -8,6 +8,7 @@ type State struct {
 	Channel       *discordgo.Channel
 	Channels      []*discordgo.Channel
 	Members       map[string]*discordgo.Member
+	MemberRole    map[string]*discordgo.Role
 	Messages      []*discordgo.Message
 	Session       *Session
 	MessageAmount int  //Amount of Messages to keep in State
