@@ -1,7 +1,7 @@
 package main
 
 import (
-	"fmt"
+	"log"
 	"os"
 	"os/exec"
 	"strings"
@@ -105,5 +105,7 @@ func MessagePrint(Time, Username, Content string) {
 	UserName := color.New(color.FgGreen).SprintFunc()
 	TimeStamp, _ := time.Parse(time.RFC3339, Time)
 	LocalTime := TimeStamp.Local().Format("2006/01/02 15:04:05")
-	fmt.Printf("%s > %s > %s\n", LocalTime, UserName(Username), Content)
+	log.SetFlags(0)
+	log.Printf("%s > %s > %s\n", LocalTime, UserName(Username), Content)
+	log.SetFlags(log.LstdFlags)
 }
