@@ -3,6 +3,9 @@ package DiscordState
 
 import (
 	"fmt"
+	"os"
+	"bufio"
+	"strings"
 
 	"github.com/Rivalo/discordgo_cli"
 )
@@ -23,23 +26,37 @@ func (Session *Session) Start() error {
 
 	fmt.Printf("*Starting Session...")
 
-	dg, err := discordgo.New(Session.Username, Session.Password)
-	if err != nil {
-		return err
+	dg, err := discordgo.New()
+	if err != nil { return err; }
+
+	err = dg.Login(Session.Username, Session.Password)
+	if (err != nil) { return err; }
+
+	if dg.Mfa && dg.Ticket != "" {
+	        fmt.Print("\nEnter multi-factor authentication code: ")
+	        reader := bufio.NewReader(os.Stdin)
+	        text, _ := reader.ReadString('\n')
+		text = strings.TrimSpace(text)
+		err := dg.AuthTotp(text, dg.Ticket)
+		if err != nil { return err }
 	}
 
+	if dg.Token == "" {
+		return fmt.Errorf("Failed to get authentication token")
+	}
+
+	Session.DiscordGo = dg
+
 	// Open the websocket and begin listening.
-	dg.Open()
+	Session.DiscordGo.Open()
 
 	//Retrieve GuildID's from current User
-	UserGuilds, err := dg.UserGuilds()
+	UserGuilds, err := Session.DiscordGo.UserGuilds()
 	if err != nil {
 		return err
 	}
 
 	Session.Guilds = UserGuilds
-
-	Session.DiscordGo = dg
 
 	Session.User, _ = Session.DiscordGo.User("@me")
 
