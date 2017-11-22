@@ -15,6 +15,8 @@ func newMessage(s *discordgo.Session, m *discordgo.MessageCreate) {
 		go Notify(m.Message)
 	}
 
+	//test comment
+
 	// Do nothing when State is disabled
 	if !State.Enabled {
 		return
