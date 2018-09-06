@@ -1,4 +1,11 @@
 # discord-cli
+## Project is on hold
+This project was started as an experiment for me to get familiar with Go. Back in the day the Discord API was also a bit simpler and Linux support was not really there unfortunately. Since then Linux support is there luckily, new features have been added to Discord that are not being supported by the cli currently.
+I've personally moved on to other things, and since I do not really need a Discord CLI I will not be actively developing the client anymore.
+
+If people feel like they want to actually manage the project and actively develop for it then contact me. Otherwise if you have an addition that improves the client, please do a pull request. I will look at it.  If there are any big problems for further feature development such as API breaks, you can also contact me and we will look if anything can still be done :)
+______
+
 Minimalistic Command-Line Interface for Discord
 
 Master (Semi-Stable): [![Build Status](https://travis-ci.org/Rivalo/discord-cli.svg?branch=master)](https://travis-ci.org/Rivalo/discord-cli), Develop (Default Git Branch): [![Build Status](https://travis-ci.org/Rivalo/discord-cli.svg?branch=develop)](https://travis-ci.org/Rivalo/discord-cli)
